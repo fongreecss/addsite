@@ -1,5 +1,7 @@
 # addsite
 
+##download addsite file
+
 ```sh
 $ curl -O https://raw.githubusercontent.com/frasaleksander/addsite/master/addsite 
 ```
@@ -15,6 +17,7 @@ $ curl -O https://raw.githubusercontent.com/frasaleksander/addsite/master/addsit
     ADMINEMAIL=someemail@gmail.com
 ```
 
+## move addsite file to /usr/local/bin folder
     
 ```sh
 $ chmod +x addsite
