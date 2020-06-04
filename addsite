@@ -1,0 +1,83 @@
+#!/bin/bash
+    #not recommended to use on production server!!!
+    #req: 
+    # - apache, 
+    # - php (at least 7 for new magento),
+    # - wp-cli (wordpress comand line), 
+    # - composer
+    # - laravel
+
+    if [ $# -lt 1 ]; then
+        echo "there should be at least one argument"
+        return
+    fi
+    if [ $# -ge 3 ]; then 
+        echo "there are too many arguments"
+        return
+    fi
+
+    #variables - change them
+    APACHEFILEPATH=/etc/apache2/sites-available/${1}.conf
+    SITENAME=$1.localhost
+    HTMLDIRPATH=/var/www/html
+    DIRPATH=$HTMLDIRPATH/$1
+    INDEXFILEPATH=$DIRPATH/index.php
+    #change these values!!!!
+    DBUSER=root
+    DBPASS=password
+    DBHOST=localhost
+    #for wordpress
+    ADMINNAME=username
+    ADMINPASS=password
+    ADMINEMAIL=somename@gmail.com
+
+    #sudo rm -f $FILEPATH
+
+    #dissable apache site if exists before hand -- warning
+    sudo a2dissite $1
+
+    #create apache2 config file
+    echo "" | sudo tee $APACHEFILEPATH > /dev/null
+    echo "<VirtualHost *:80>" | sudo tee --append $APACHEFILEPATH > /dev/null
+    echo "ServerName $SITENAME" | sudo tee --append $APACHEFILEPATH > /dev/null
+    echo "ServerAlias www.$SITENAME" | sudo tee --append $APACHEFILEPATH > /dev/null
+    echo "ServerAdmin webmaster@localhost" | sudo tee --append $APACHEFILEPATH > /dev/null
+    if [ $# == 2 ] && [ $2 == "laravel" ]; then
+        echo "DocumentRoot ""${HTMLDIRPATH}""/""${1}""/public" | sudo tee --append $APACHEFILEPATH > /dev/null
+    else 
+        echo "DocumentRoot ""${HTMLDIRPATH}""/""${1}" | sudo tee --append $APACHEFILEPATH > /dev/null
+    fi   
+    echo "ErrorLog \${APACHE_LOG_DIR}/""${1}"".error.log" | sudo tee --append $APACHEFILEPATH > /dev/null
+    echo "CustomLog \${APACHE_LOG_DIR}/""${1}"".access.log combined" | sudo tee --append $APACHEFILEPATH > /dev/null
+    echo "</VirtualHost>" | sudo tee --append $APACHEFILEPATH > /dev/null
+    echo "127.0.0.1       ""${1}"".localhost"  | sudo tee --append /etc/hosts > /dev/null
+
+    #enabling site and restarting apache server (change if different apache server version)
+    sudo a2ensite $1
+    sudo service apache2 restart
+    sudo service mysql restart
+    #create mysql database
+    echo "create database if not exists ""${1}"";"
+    echo "create database if not exists ""${1}"";" | mysql --user=$DBUSER --password=$DBPASS --host=$DBHOST
+        
+
+    if [ $# == 1 ]; then
+        mkdir -p $DIRPATH
+        echo "<?php echo \"""${1}"".localhost\";" > $INDEXFILEPATH
+    elif [ $# == 2 ] && [ $2 == "laravel" ]; then
+        composer create-project laravel/laravel $DIRPATH
+        #composer require "laravelcollective/html":"^5.4.0"
+    elif [ $# == 2 ] && [ $2 == "magento" ]; then
+        composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition $DIRPATH
+    elif [ $# == 2 ] && [ $2 == "wp" ]; then
+        wp core download --path=$DIRPATH
+        wp config create --path=$DIRPATH --dbuser=$DBUSER --dbpass=$DBPASS --dbhost=$DBHOST --dbname=$1
+        wp core install --path=$DIRPATH --url=$SITENAME --title=$1 --admin_name=$ADMINNAME --admin_password=$ADMINPASS --admin_email=$ADMINEMAIL
+        wp plugin delete hello --path=$DIRPATH
+        wp plugin install wordfence --activate --path=$DIRPATH
+    fi
+    #777 all rights to everyone, rather use 755 or 644
+    chmod 777 -R $DIRPATH
+    cd $DIRPATH
+    #uncomment this if you have installed: https://github.com/frasaleksander/bm-terminal
+    bmadd $1
