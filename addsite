@@ -77,7 +77,7 @@
         wp plugin install wordfence --activate --path=$DIRPATH
     fi
     #777 all rights to everyone, rather use 755 or 644
-    chmod 777 -R $DIRPATH
+    sudo chmod 777 -R $DIRPATH
     cd $DIRPATH
     #uncomment this if you have installed: https://github.com/frasaleksander/bm-terminal
     bmadd $1
