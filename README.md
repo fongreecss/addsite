@@ -21,5 +21,5 @@ $ curl -O https://raw.githubusercontent.com/frasaleksander/addsite/master/addsit
     
 ```sh
 $ chmod +x addsite
-$ sudo mv addsite /usr/local/bin/addiste
+$ sudo mv addsite /usr/local/bin/addsite
 ```
