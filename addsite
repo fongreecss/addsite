@@ -73,7 +73,8 @@
         wp core download --path=$DIRPATH
         wp config create --path=$DIRPATH --dbuser=$DBUSER --dbpass=$DBPASS --dbhost=$DBHOST --dbname=$1
         wp core install --path=$DIRPATH --url=$SITENAME --title=$1 --admin_name=$ADMINNAME --admin_password=$ADMINPASS --admin_email=$ADMINEMAIL
-        wp plugin delete hello --path=$DIRPATH
+        wp plugin deactivate askimet hello
+        wp plugin delete askimet hello --path=$DIRPATH
         wp plugin install wordfence --activate --path=$DIRPATH
     fi
     #777 all rights to everyone, rather use 755 or 644
