@@ -5,6 +5,7 @@ $ curl -O https://raw.githubusercontent.com/frasaleksander/addsite/master/addsit
 ```
 
 #edit addsite file
+```sh
     DBUSER=root
     DBPASS=mysqlpassword 
     DBHOST=localhost
@@ -12,6 +13,7 @@ $ curl -O https://raw.githubusercontent.com/frasaleksander/addsite/master/addsit
     ADMINNAME=wpusername
     ADMINPASS=wppassword
     ADMINEMAIL=someemail@gmail.com
+```
 
     
 ```sh
