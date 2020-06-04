@@ -4,7 +4,7 @@
 $ curl -O https://raw.githubusercontent.com/frasaleksander/addsite/master/addsite 
 ```
 
-#edit addsite file
+## edit addsite file
 ```sh
     DBUSER=root
     DBPASS=mysqlpassword 
