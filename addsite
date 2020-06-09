@@ -33,7 +33,7 @@
 
     #sudo rm -f $FILEPATH
 
-    #dissable apache site if exists before hand -- warning
+        #dissable apache site if exists before hand -- warning
     sudo a2dissite $1
 
     #create apache2 config file
@@ -73,10 +73,11 @@
         wp core download --path=$DIRPATH
         wp config create --path=$DIRPATH --dbuser=$DBUSER --dbpass=$DBPASS --dbhost=$DBHOST --dbname=$1
         wp core install --path=$DIRPATH --url=$SITENAME --title=$1 --admin_name=$ADMINNAME --admin_password=$ADMINPASS --admin_email=$ADMINEMAIL
-        wp scaffold _s blnk --theme_name="BLNK_" --author="Aleksander Fras" --path=$DIRPATH --activate
+        wp theme install hello-elementor --path=$DIRPATH
+        wp scaffold child-theme hello-elementor-child --parent_theme=hello-elementor --path=$DIRPATH --activate --enable-network
         wp plugin deactivate akismet hello --path=$DIRPATH
         wp plugin delete akismet hello --path=$DIRPATH
-        wp plugin install woocommerce wordpress-seo flexible-shipping elementor jetpack --activate --path=$DIRPATH
+        wp plugin install advanced-custom-fields multilingual-press elementor woocommerce wordpress-seo flexible-shipping --activate --path=$DIRPATH
     fi
     #777 all rights to everyone, rather use 755 or 644
     sudo chmod 777 -R $DIRPATH
